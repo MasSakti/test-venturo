@@ -61,109 +61,138 @@ if (isset($_GET['tahun'])) {
                 <?php
                 $namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 ?>
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered" style="margin: 0;">
-                        <thead>
-                            <tr class="table-dark">
-                                <th rowspan="2" style="text-align:center;vertical-align: middle;width: 250px;">Menu</th>
-                                <th colspan="12" style="text-align: center;"><?= $_GET['tahun']; ?>
-                                </th>
-                                <th rowspan="2" style="text-align:center;vertical-align: middle;width:75px">Total</th>
-                            </tr>
-                            <tr class="table-dark">
-                                <?php for ($i = 0; $i < count($namaBulan); $i++) { ?>
-                                    <th style="text-align: center;width: 75px;"><?= $namaBulan[$i]; ?></th>
-                                <?php } ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $totalHasil = 0;
-                            $totalMakanan = 0;
-                            $totalMinuman = 0;
-                            $transaksi = json_decode($json_data, true);
-                            $totals = [];
-                            $monthly = [];
-                            $testMonthly = [];
-                            $monthlyTotal = [];
-                            $categoryTotal = [];
-                            $menus = json_decode($json_menu, true);
-                            foreach ($transaksi as $row) {
-                                $datemonth = date('M', strtotime($row['tanggal']));
+                <?php if (isset($_GET['tahun'])) { ?>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered" style="margin: 0;">
+                            <thead>
+                                <tr class="table-dark">
+                                    <th rowspan="2" style="text-align:center;vertical-align: middle;width: 250px;">Menu</th>
+                                    <th colspan="12" style="text-align: center;"><?= $_GET['tahun']; ?>
+                                    </th>
+                                    <th rowspan="2" style="text-align:center;vertical-align: middle;width:75px">Total</th>
+                                </tr>
+                                <tr class="table-dark">
+                                    <?php for ($i = 0; $i < count($namaBulan); $i++) { ?>
+                                        <th style="text-align: center;width: 75px;"><?= $namaBulan[$i]; ?></th>
+                                    <?php } ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $totalHasil = 0;
+                                $totalMakanan = 0;
+                                $totalMinuman = 0;
+                                $transaksi = json_decode($json_data, true);
+                                $totals = [];
+                                $monthlyMakanan = [];
+                                $monthlyMinuman = [];
+                                $testMonthly = [];
+                                $monthlyTotal = [];
+                                $categoryTotal = [];
+                                $menus = json_decode($json_menu, true);
+                                if (isset($transaksi)) {
+                                    foreach ($transaksi as $row) {
+                                        $datemonth = date('M', strtotime($row['tanggal']));
 
-                                $totals[$row['menu']] = isset($totals[$row['menu']]) ? $totals[$row['menu']] : 0;
-                                $monthly[$row['menu']][$datemonth] = isset($monthly[$row['menu']][$datemonth]) ? $monthly[$row['menu']][$datemonth] : 0;
-                                $monthlyTotal[$datemonth] = isset($monthlyTotal[$datemonth]) ? $monthlyTotal[$datemonth] : 0;
+                                        $totals[$row['menu']] = isset($totals[$row['menu']]) ? $totals[$row['menu']] : 0;
+                                        $monthlyTotal[$datemonth] = isset($monthlyTotal[$datemonth]) ? $monthlyTotal[$datemonth] : 0;
 
-                                $totals[$row['menu']] += $row['total'];
-                                $monthly[$row['menu']][$datemonth] += $row['total'];
-                                $monthlyTotal[$datemonth] += $row['total'];
+                                        $totals[$row['menu']] += $row['total'];
+                                        $monthlyTotal[$datemonth] += $row['total'];
 
-                                foreach ($menus as $value) {
+                                        foreach ($menus as $value) {
 
-                                    if ($value['kategori'] == 'makanan' && $value['menu'] == $row['menu']) {
-                                        $dataMakanan[$value['kategori']][$datemonth] = isset($dataMakanan[$value['kategori']][$datemonth]) ? $dataMakanan[$value['kategori']][$datemonth] : 0;
-                                        $dataMakanan[$value['kategori']][$datemonth] += $row['total'];
-                                    }
-                                    if ($value['kategori'] == 'minuman' && $value['menu'] == $row['menu']) {
-                                        $dataMinuman[$value['kategori']][$datemonth] = isset($dataMinuman[$value['kategori']][$datemonth]) ? $dataMinuman[$value['kategori']][$datemonth] : 0;
-                                        $dataMinuman[$value['kategori']][$datemonth] += $row['total'];
+                                            if ($value['kategori'] == 'makanan' && $value['menu'] == $row['menu']) {
+                                                $monthlyMakanan[$value['kategori']][$row['menu']][$datemonth] = isset($monthlyMakanan[$value['kategori']][$row['menu']][$datemonth]) ? $monthlyMakanan[$value['kategori']][$row['menu']][$datemonth] : 0;
+                                                $monthlyMakanan[$value['kategori']][$row['menu']][$datemonth] += $row['total'];
+
+                                                $dataMakanan[$value['kategori']][$datemonth] = isset($dataMakanan[$value['kategori']][$datemonth]) ? $dataMakanan[$value['kategori']][$datemonth] : 0;
+                                                $dataMakanan[$value['kategori']][$datemonth] += $row['total'];
+                                            }
+                                            if ($value['kategori'] == 'minuman' && $value['menu'] == $row['menu']) {
+                                                $monthlyMinuman[$value['kategori']][$row['menu']][$datemonth] = isset($monthlyMinuman[$value['kategori']][$row['menu']][$datemonth]) ? $monthlyMinuman[$value['kategori']][$row['menu']][$datemonth] : 0;
+                                                $monthlyMinuman[$value['kategori']][$row['menu']][$datemonth] += $row['total'];
+
+                                                $dataMinuman[$value['kategori']][$datemonth] = isset($dataMinuman[$value['kategori']][$datemonth]) ? $dataMinuman[$value['kategori']][$datemonth] : 0;
+                                                $dataMinuman[$value['kategori']][$datemonth] += $row['total'];
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                            ?>
-
-                            <?php if (count($menus) != 0) { ?>
-                                <?php foreach ($menus as $value) { ?>
-                                    <td><?= $value['menu']; ?></td>
-                                    <?php for ($i = 0; $i < count($namaBulan); $i++) { ?>
-                                        <td style="text-align: right;">
-                                            <?= isset($monthly[$value['menu']][$namaBulan[$i]]) ? $monthly[$value['menu']][$namaBulan[$i]] : ""; ?>
+                                ?>
+                                <tr>
+                                    <td class="table-secondary"><b>Makanan</b></td>
+                                    <?php for ($i = 0; $i < count($namaBulan); $i++) {
+                                        $totalMakanan += isset($dataMakanan['makanan'][$namaBulan[$i]]) ? $dataMakanan['makanan'][$namaBulan[$i]] : 0;;
+                                    ?>
+                                        <td class="table-secondary" style="text-align: right;">
+                                            <b><?= isset($dataMakanan['makanan'][$namaBulan[$i]]) ? $dataMakanan['makanan'][$namaBulan[$i]] : ""; ?></b>
                                         </td>
                                     <?php } ?>
-                                    <td style="text-align: right;"><b><?= isset($totals[$value['menu']]) ? $totals[$value['menu']] : 0; ?></b></td>
-                                    </tr>
+                                    <td class="table-secondary" style="text-align: right;"><b><?= $totalMakanan; ?></b></td>
+                                </tr>
+
+                                <?php if (count($menus) != 0) { ?>
+                                    <?php foreach ($menus as $value) { ?>
+                                        <?php if ($value['kategori'] == 'makanan') { ?>
+                                            <td><?= $value['menu']; ?></td>
+                                            <?php for ($i = 0; $i < count($namaBulan); $i++) { ?>
+                                                <td style="text-align: right;">
+                                                    <?= isset($monthlyMakanan['makanan'][$value['menu']][$namaBulan[$i]]) ? $monthlyMakanan['makanan'][$value['menu']][$namaBulan[$i]] : ""; ?>
+                                                </td>
+                                            <?php } ?>
+                                            <td style="text-align: right;"><b><?= isset($totals[$value['menu']]) ? $totals[$value['menu']] : 0; ?></b></td>
+                                            </tr>
+                                        <?php } ?>
+                                    <?php } ?>
                                 <?php } ?>
 
-                            <?php } ?>
-                            <tr class="table-dark">
-                                <td><b>Total</b></td>
-                                <?php
-                                for ($i = 0; $i < count($namaBulan); $i++) {
-                                    $totalHasil += isset($monthlyTotal[$namaBulan[$i]]) ? $monthlyTotal[$namaBulan[$i]] : 0;;
-                                ?>
-                                    <td style="text-align: right;">
-                                        <b><?= isset($monthlyTotal[$namaBulan[$i]]) ? $monthlyTotal[$namaBulan[$i]] : ""; ?></b>
-                                    </td>
-                                <?php } ?>
-                                <td style="text-align: right;"><b><?= $totalHasil; ?></b></td>
-                            </tr>
+                                <tr>
+                                    <td class="table-secondary"><b>Minuman</b></td>
+                                    <?php for ($i = 0; $i < count($namaBulan); $i++) {
+                                        $totalMinuman += isset($dataMinuman['minuman'][$namaBulan[$i]]) ? $dataMinuman['minuman'][$namaBulan[$i]] : 0;;
+                                    ?>
+                                        <td class="table-secondary" style="text-align: right;">
+                                            <b><?= isset($dataMinuman['minuman'][$namaBulan[$i]]) ? $dataMinuman['minuman'][$namaBulan[$i]] : ""; ?></b>
+                                        </td>
+                                    <?php } ?>
+                                    <td class="table-secondary" style="text-align: right;"><b><?= $totalMinuman; ?></b></td>
+                                </tr>
 
-                            <tr>
-                                <td class="table-secondary"><b>Makanan</b></td>
-                                <?php for ($i = 0; $i < count($namaBulan); $i++) {
-                                    $totalMakanan += isset($dataMakanan['makanan'][$namaBulan[$i]]) ? $dataMakanan['makanan'][$namaBulan[$i]] : 0;;
-                                ?>
-                                    <td class="table-secondary" style="text-align: right;">
-                                        <b><?= isset($dataMakanan['makanan'][$namaBulan[$i]]) ? $dataMakanan['makanan'][$namaBulan[$i]] : ""; ?></b>
-                                    </td>
+                                <?php if (count($menus) != 0) { ?>
+                                    <?php foreach ($menus as $value) { ?>
+                                        <?php if ($value['kategori'] == 'minuman') { ?>
+                                            <td><?= $value['menu']; ?></td>
+                                            <?php for ($i = 0; $i < count($namaBulan); $i++) { ?>
+                                                <td style="text-align: right;">
+                                                    <?= isset($monthlyMinuman['minuman'][$value['menu']][$namaBulan[$i]]) ? $monthlyMinuman['minuman'][$value['menu']][$namaBulan[$i]] : ""; ?>
+                                                </td>
+                                            <?php } ?>
+                                            <td style="text-align: right;"><b><?= isset($totals[$value['menu']]) ? $totals[$value['menu']] : 0; ?></b></td>
+                                            </tr>
+                                        <?php } ?>
+                                    <?php } ?>
                                 <?php } ?>
-                                <td class="table-secondary" style="text-align: right;"><b><?= $totalMakanan; ?></b></td>
-                            </tr>
-                            <tr>
-                                <td class="table-secondary"><b>Minuman</b></td>
-                                <?php for ($i = 0; $i < count($namaBulan); $i++) {
-                                    $totalMinuman += isset($dataMinuman['minuman'][$namaBulan[$i]]) ? $dataMinuman['minuman'][$namaBulan[$i]] : 0;;
-                                ?>
-                                    <td class="table-secondary" style="text-align: right;">
-                                        <b><?= isset($dataMinuman['minuman'][$namaBulan[$i]]) ? $dataMinuman['minuman'][$namaBulan[$i]] : ""; ?></b>
-                                    </td>
-                                <?php } ?>
-                                <td class="table-secondary" style="text-align: right;"><b><?= $totalMinuman; ?></b></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+                                <tr class="table-dark">
+                                    <td><b>Total</b></td>
+                                    <?php
+                                    for ($i = 0; $i < count($namaBulan); $i++) {
+                                        $totalHasil += isset($monthlyTotal[$namaBulan[$i]]) ? $monthlyTotal[$namaBulan[$i]] : 0;;
+                                    ?>
+                                        <td style="text-align: right;">
+                                            <b><?= isset($monthlyTotal[$namaBulan[$i]]) ? $monthlyTotal[$namaBulan[$i]] : ""; ?></b>
+                                        </td>
+                                    <?php } ?>
+                                    <td style="text-align: right;"><b><?= $totalHasil; ?></b></td>
+                                </tr>
+
+                            </tbody>
+                        <?php } else { ?>
+                            <br>
+                        <?php } ?>
+                        </table>
+                    </div>
             </div>
         </div>
     </div>

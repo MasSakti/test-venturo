@@ -106,10 +106,10 @@ if (isset($_GET['tahun'])) {
                                     //$categoryTotal[$datemonth][$value['kategori']] += $row['total'];
 
                                     if ($value['kategori'] == 'makanan') {
-                                        $dataMakanan[$value['kategori']][$datemonth] += $row['total'];
+                                        $dataMakanan[$value['kategori']][$datemonth][$row['menu']] += $row['total'];
                                     }
                                     if ($value['kategori'] == 'minuman') {
-                                        $dataMinuman[$value['kategori']][$datemonth] = $monthly[$row['menu']][$datemonth];
+                                        $dataMinuman[$value['kategori']][$datemonth][$row['menu']] = $monthly[$row['menu']][$datemonth];
                                     }
                                 }
                             }

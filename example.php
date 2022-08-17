@@ -84,6 +84,12 @@ if (isset($_GET['tahun'])) {
                         </thead>
                         <tbody>
                             <tr>
+                                <td class="table-secondary"><b>Makanan</b></td>
+                                <td style="text-align: right;">
+                                    <b>130,000</b>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Nasi Goreng</td>
                                 <td style="text-align: right;">
                                     130,000
@@ -121,6 +127,12 @@ if (isset($_GET['tahun'])) {
                                     30,000
                                 </td>
                                 <td style="text-align: right;"><b>665,000</b></td>
+                            </tr>
+                            <tr>
+                                <td class="table-secondary"><b>Minuman</b></td>
+                                <td style="text-align: right;">
+                                    <b>130,000</b>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Teh Hijau</td>
@@ -200,18 +212,6 @@ if (isset($_GET['tahun'])) {
                                     <b>130,000</b>
                                 </td>
                                 <td style="text-align: right;"><b>3,965,000</b></td>
-                            </tr>
-                            <tr>
-                                <td class="table-secondary"><b>Makanan</b></td>
-                                <td style="text-align: right;">
-                                    <b>130,000</b>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-secondary"><b>Minuman</b></td>
-                                <td style="text-align: right;">
-                                    <b>130,000</b>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
